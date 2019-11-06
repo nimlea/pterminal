@@ -1,6 +1,10 @@
 import threading, subprocess, queue, json, time, io, locale
+from . import ptl_dispatcher
 
 class PtlThread(threading.Thread):
+    signal_output  = "PTL_THREAD_SIGNAL_OUTPUT"
+    signal_error   = "PTL_THREAD_SIGNAL_ERROR"
+
     def __init__(self):
         super().__init__()
         threading.Thread.__init__(self)
@@ -29,6 +33,12 @@ class PtlThread(threading.Thread):
         })
         self.instructions.put(inst)
 
+    def on(self, signal, handler):
+        return ptl_dispatcher.connect(signal, handler)
+    
+    def off(self, id):
+        ptl_dispatcher.remove(id)
+
     def _run_command(self, inst):
         cmd = inst["cmd"]
         dir = inst["dir"]
@@ -45,11 +55,15 @@ class PtlThread(threading.Thread):
             
             # get output/error
             out = ""
-            for line in iter(p.stdout.readline, b''):
-                out += str(line, encoding=locale.getpreferredencoding())
+            for linebytes in iter(p.stdout.readline, b''):
+                line = str(linebytes, encoding=locale.getpreferredencoding())
+                out += line
+                ptl_dispatcher.send(PtlThread.signal_output, self, line)
             err = ""
-            for line in iter(p.stderr.readline, b''):
+            for linebytes in iter(p.stderr.readline, b''):
+                line = str(linebytes, encoding=locale.getpreferredencoding())
                 err += str(line, encoding=locale.getpreferredencoding())
+                ptl_dispatcher.send(PtlThread.signal_error, self, line)
 
             if out:
                 dict_out = {
