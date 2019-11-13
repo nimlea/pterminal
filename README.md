@@ -14,7 +14,7 @@ def on_pipe_out(self, sender, txtout):
     print(txtout)
 
 def on_pipe_err(self, sender, txterr):
-    print(txtout)
+    print(txterr)
 
 pthread.on(pterminal.SIGNAL_OUT, on_pipe_out)
 pthread.on(pterminal.SIGNAL_ERR, on_pipe_err)
