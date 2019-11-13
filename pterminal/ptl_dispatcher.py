@@ -4,7 +4,7 @@ count = 0
 
 def connect(signal, handler):
     if signal == None:
-        raise Exception("connect() - signal is None, handler=%r, sender=%r"%(handler, sender))
+        raise Exception("connect() - signal is None, handler=%r"%(handler))
 
     receiver = {}
     receiver["signal"]  = signal

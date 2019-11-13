@@ -1,13 +1,16 @@
 import threading, subprocess, queue, json, time, io, locale
 from . import ptl_dispatcher
 
-class PtlThread(threading.Thread):
-    signal_output  = "PTL_THREAD_SIGNAL_OUTPUT"
-    signal_error   = "PTL_THREAD_SIGNAL_ERROR"
+SIGNAL_OUT = "PTL_THREAD_SIGNAL_OUTPUT"
+SIGNAL_ERR = "PTL_THREAD_SIGNAL_ERROR"
 
+class PtlThread(threading.Thread):
     def __init__(self):
         super().__init__()
         threading.Thread.__init__(self)
+
+        # status
+        self._is_running = True
 
         # instruction queue
         self.instructions = queue.Queue()
@@ -16,7 +19,7 @@ class PtlThread(threading.Thread):
         self.loglist = []
 
     def run(self):
-        while(True):
+        while(self._is_running):
             if self.instructions.empty():
                 # if no instruction, sleep 1 second
                 time.sleep(1)
@@ -24,6 +27,10 @@ class PtlThread(threading.Thread):
                 # run by sequence
                 inst = json.loads(self.instructions.get())
                 self._run_command(inst)
+    
+    def terminate(self):
+        if(self.is_alive()):
+            self._is_running = False
     
     # add one instruction, will be run by sequence in thread
     def add_command(self, cmd, dir=None):
@@ -58,12 +65,12 @@ class PtlThread(threading.Thread):
             for linebytes in iter(p.stdout.readline, b''):
                 line = str(linebytes, encoding=locale.getpreferredencoding())
                 out += line
-                ptl_dispatcher.send(PtlThread.signal_output, self, line)
+                ptl_dispatcher.send(SIGNAL_OUT, self, line)
             err = ""
             for linebytes in iter(p.stderr.readline, b''):
                 line = str(linebytes, encoding=locale.getpreferredencoding())
                 err += str(line, encoding=locale.getpreferredencoding())
-                ptl_dispatcher.send(PtlThread.signal_error, self, line)
+                ptl_dispatcher.send(SIGNAL_ERR, self, line)
 
             if out:
                 dict_out = {
