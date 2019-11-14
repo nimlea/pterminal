@@ -1,9 +1,6 @@
 import threading, subprocess, queue, json, time, io, locale
 from . import ptl_dispatcher
-
-SIGNAL_ECHO = "PTH_THREAD_SIGNAL_ECHO"
-SIGNAL_OUT = "PTL_THREAD_SIGNAL_OUTPUT"
-SIGNAL_ERR = "PTL_THREAD_SIGNAL_ERROR"
+from .ptl_signal import *
 
 class PtlThread(threading.Thread):
     def __init__(self):
