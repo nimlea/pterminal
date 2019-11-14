@@ -1,6 +1,7 @@
 import threading, subprocess, queue, json, time, io, locale
 from . import ptl_dispatcher
 
+SIGNAL_ECHO = "PTH_THREAD_SIGNAL_ECHO"
 SIGNAL_OUT = "PTL_THREAD_SIGNAL_OUTPUT"
 SIGNAL_ERR = "PTL_THREAD_SIGNAL_ERROR"
 
@@ -50,6 +51,7 @@ class PtlThread(threading.Thread):
         cmd = inst["cmd"]
         dir = inst["dir"]
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=dir)
+        ptl_dispatcher.send(SIGNAL_ECHO, self, cmd)
         # read stdout line by line
         while(True):
             code = p.returncode
