@@ -48,7 +48,7 @@ class PtlThread(threading.Thread):
         cmd = inst["cmd"]
         dir = inst["dir"]
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=dir)
-        ptl_dispatcher.send(SIGNAL_ECHO, self, cmd)
+        ptl_dispatcher.send(SIGNAL_ECHO, self, cmd, dir)
         # read stdout line by line
         while(True):
             code = p.returncode
