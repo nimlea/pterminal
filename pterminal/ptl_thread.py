@@ -68,7 +68,7 @@ class PtlThread(threading.Thread):
             err = ""
             for linebytes in iter(p.stderr.readline, b''):
                 line = str(linebytes, encoding=locale.getpreferredencoding())
-                err += str(line, encoding=locale.getpreferredencoding())
+                err += line
                 ptl_dispatcher.send(SIGNAL_ERR, self, line)
 
             if out:
