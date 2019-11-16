@@ -34,7 +34,7 @@ class PtlThread(threading.Thread):
     def add_command(self, cmd, dir=None):
         inst = json.dumps({
             "cmd":cmd,
-            "dir":str(dir).replace("\\", "/"),
+            "dir":dir,
         })
         self.instructions.put(inst)
 
