@@ -57,6 +57,8 @@ class PtlThread(threading.Thread):
                     pass
                 else:
                     raise Exception("popen return error code:"+code)
+                p.terminate()
+                p.wait()
                 break
             
             # get output/error
