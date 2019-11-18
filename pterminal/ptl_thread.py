@@ -12,6 +12,8 @@ class PtlThread(threading.Thread):
 
         # instruction queue
         self.instructions = queue.Queue()
+        # instruction sequence id, auto increment
+        self.seqid = 0
 
         # array of all output/error
         self.loglist = []
@@ -32,11 +34,14 @@ class PtlThread(threading.Thread):
     
     # add one instruction, will be run by sequence in thread
     def add_command(self, cmd, dir=None):
+        self.seqid += 1
         inst = json.dumps({
-            "cmd":cmd,
-            "dir":dir,
+            "id"  : self.seqid, 
+            "cmd" : cmd,
+            "dir" : dir,
         })
         self.instructions.put(inst)
+        return self.seqid
 
     def on(self, signal, handler):
         return ptl_dispatcher.connect(signal, handler)
@@ -45,6 +50,7 @@ class PtlThread(threading.Thread):
         ptl_dispatcher.remove(id)
 
     def _run_command(self, inst):
+        id = inst["id"]
         cmd = inst["cmd"]
         dir = inst["dir"]
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=dir)
@@ -59,6 +65,8 @@ class PtlThread(threading.Thread):
                     raise Exception("popen return error code:"+str(code))
                 p.terminate()
                 p.wait()
+                # dispatch finished signal
+                ptl_dispatcher.send(SIGNAL_FINISHED, self, id, dir)
                 break
             
             # get output/error
