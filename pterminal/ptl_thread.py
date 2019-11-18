@@ -32,13 +32,14 @@ class PtlThread(threading.Thread):
         if(self.is_alive()):
             self._is_running = False
     
-    # add one instruction, will be run by sequence in thread
-    def add_command(self, cmd, dir=None):
+    # add one instruction, will be run by sequence in thread. userdata will pass through to caller itself
+    def add_command(self, cmd, dir=None, userdata=None):
         self.seqid += 1
         inst = json.dumps({
             "id"  : self.seqid, 
             "cmd" : cmd,
             "dir" : dir,
+            "userdata" : userdata,
         })
         self.instructions.put(inst)
         return self.seqid
@@ -50,7 +51,6 @@ class PtlThread(threading.Thread):
         ptl_dispatcher.remove(id)
 
     def _run_command(self, inst):
-        id = inst["id"]
         cmd = inst["cmd"]
         dir = inst["dir"]
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=dir)
@@ -66,7 +66,9 @@ class PtlThread(threading.Thread):
                 p.terminate()
                 p.wait()
                 # dispatch finished signal
-                ptl_dispatcher.send(SIGNAL_FINISHED, self, id, dir)
+                id = inst["id"]
+                userdata = inst["userdata"]
+                ptl_dispatcher.send(SIGNAL_FINISHED, self, id, userdata)
                 break
             
             # get output/error
