@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
         name = 'pipe-terminal',
-        version = '0.5.1',
+        version = '1.0.0',
         description = 'A simple, light-weight input/output library for terminal in new thread',
         author = 'YL',
         url = 'https://github.com/yyyyl/pipe-terminal',
