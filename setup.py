@@ -10,6 +10,7 @@ setup(
     author = 'YL',
     url = 'https://github.com/yyyyl/pipe-terminal',
     packages = find_packages(),
+	data_files = [("", ["LICENSE"])],
     classifiers=[
 		"License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
 		"Programming Language :: Python :: 3",
