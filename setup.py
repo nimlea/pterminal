@@ -10,11 +10,10 @@ with open(path.join(cur_dir, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name = 'pipe-terminal',
-    version = '1.0.1',
-    description = 'A simple, light-weight input/output library for terminal in new thread',
+    name = 'pterminal',
+    version = '1.0.0',
     author = 'YL',
-    url = 'https://github.com/yyyyl/pipe-terminal',
+    url = 'https://github.com/yyyyl/pterminal',
     packages = find_packages(),
 	data_files = [("", ["LICENSE"])],
     classifiers=[

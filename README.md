@@ -1,5 +1,5 @@
-# pipe-terminal
-A simple, light-weight input/output library for terminal in new thread
+# pterminal
+A simple, light-weight input/output library for pipe terminal in new thread
 
 # Usage
 ## create and start
