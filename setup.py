@@ -11,7 +11,7 @@ with open(path.join(cur_dir, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name = 'pterminal',
-    version = '1.0.0',
+    version = '1.0.1',
     author = 'NimLea',
     url = 'https://github.com/nimlea/pterminal',
     packages = find_packages(),
