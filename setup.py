@@ -12,8 +12,8 @@ with open(path.join(cur_dir, 'README.md'), encoding='utf-8') as f:
 setup(
     name = 'pterminal',
     version = '1.0.0',
-    author = 'YL',
-    url = 'https://github.com/yyyyl/pterminal',
+    author = 'NimLea',
+    url = 'https://github.com/nimlea/pterminal',
     packages = find_packages(),
 	data_files = [("", ["LICENSE"])],
     classifiers=[
